@@ -1,0 +1,20 @@
+laravel: '@testbench'
+
+migrations:
+  - workbench/database/migrations
+
+providers:
+  - BBSLab\LaravelForceTwoFactor\LaravelForceTwoFactorServiceProvider
+  - BBSLab\FilamentForceTwoFactor\FilamentForceTwoFactorServiceProvider
+  - Workbench\App\Providers\WorkbenchServiceProvider
+  - Workbench\App\Providers\AdminPanelProvider
+
+workbench:
+  build:
+    - package:discover
+    - create-sqlite-db
+    - db:wipe
+    - migrate:refresh
+    - db:seed:
+        --class: 'Workbench\Database\Seeders\DatabaseSeeder'
+  sync: []
