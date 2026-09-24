@@ -29,6 +29,8 @@
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
+        "bbs-lab/filament-password-rotation": "^2.1",
+        "bbs-lab/laravel-okta": "^1.1",
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.18",
         "nunomaduro/collision": "^8.0",

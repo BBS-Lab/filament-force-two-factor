@@ -2,6 +2,12 @@
 
 All notable changes to `bbs-lab/filament-force-two-factor` will be documented in this file.
 
+## v1.0.1 - 2026-09-24
+
+### 🧪 Tests
+
+- Added end-to-end interop coverage with the real sibling packages (`filament-password-rotation` + `laravel-okta`): an un-enrolled user owing a rotation lands on the rotation page through the mandatory-MFA gate (rotation before 2FA), and an Okta-authenticated user bypasses both gates. No runtime change.
+
 ## v1.0.0 - 2026-09-24
 
 Filament adapter for [bbs-lab/laravel-force-two-factor](https://github.com/BBS-Lab/laravel-force-two-factor) — a bypass-aware mandatory multi-factor gate.

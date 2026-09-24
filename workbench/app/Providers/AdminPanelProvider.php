@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Providers;
 
 use BBSLab\FilamentForceTwoFactor\FilamentForceTwoFactorPlugin;
+use BBSLab\FilamentPasswordRotation\FilamentPasswordRotationPlugin;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
@@ -24,10 +25,15 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->authGuard('web')
+            // The web group brings StartSession, so the Okta bypass (which reads
+            // session('okta_authenticated')) works — as it does in a real app.
+            ->middleware(['web'])
             ->pages([Dashboard::class])
             ->multiFactorAuthentication([
                 AppAuthentication::make(),
             ], isRequired: true)
-            ->plugin(FilamentForceTwoFactorPlugin::make());
+            ->plugin(FilamentForceTwoFactorPlugin::make())
+            // The rotation gate too, so the interop test proves rotation-before-2FA.
+            ->plugin(FilamentPasswordRotationPlugin::make());
     }
 }

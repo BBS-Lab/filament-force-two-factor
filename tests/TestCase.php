@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace BBSLab\FilamentForceTwoFactor\Tests;
 
 use BBSLab\FilamentForceTwoFactor\FilamentForceTwoFactorServiceProvider;
+use BBSLab\FilamentPasswordRotation\FilamentPasswordRotationServiceProvider;
 use BBSLab\LaravelForceTwoFactor\LaravelForceTwoFactorServiceProvider;
+use BBSLab\LaravelOkta\LaravelOktaServiceProvider;
+use BBSLab\LaravelPasswordRotation\LaravelPasswordRotationServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
@@ -23,6 +26,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
+use SocialiteProviders\Manager\ServiceProvider as SocialiteManagerServiceProvider;
 use Workbench\App\Models\User;
 use Workbench\App\Providers\AdminPanelProvider;
 
@@ -53,11 +57,20 @@ abstract class TestCase extends Orchestra
             WidgetsServiceProvider::class,
             QueryBuilderServiceProvider::class,
             FilamentServiceProvider::class,
-            // The framework-agnostic base (auto-discovered in a real app): binds the
-            // shared TwoFactorManager bypass registry the gate reads from.
+            // socialiteproviders/manager is deferred — register it so laravel-okta
+            // (below) can extend Socialite during boot without error.
+            SocialiteManagerServiceProvider::class,
+            // The framework-agnostic base binds the shared TwoFactorManager bypass
+            // registry the gate reads from. The real sibling packages are booted too
+            // so the interop test exercises their ACTUAL registry registrations:
+            // laravel-password-rotation registers owes-rotation → 2FA bypass;
+            // laravel-okta registers okta_authenticated → both registries.
             LaravelForceTwoFactorServiceProvider::class,
+            LaravelPasswordRotationServiceProvider::class,
+            FilamentPasswordRotationServiceProvider::class,
+            LaravelOktaServiceProvider::class,
             FilamentForceTwoFactorServiceProvider::class,
-            // The workbench panel: requires app-based MFA and activates the plugin.
+            // The workbench panel: requires app-based MFA and activates both plugins.
             AdminPanelProvider::class,
         ];
     }

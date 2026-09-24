@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Models;
 
+use BBSLab\LaravelPasswordRotation\Concerns\RotatesPassword;
+use BBSLab\LaravelPasswordRotation\Contracts\MustRotatePassword;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -20,10 +22,10 @@ use Workbench\Database\Factories\UserFactory;
  * on. canAccessPanel is permissive — the tests exercise the 2FA gate, not
  * panel authorization.
  */
-class User extends Authenticatable implements FilamentUser, HasAppAuthentication
+class User extends Authenticatable implements FilamentUser, HasAppAuthentication, MustRotatePassword
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, RotatesPassword;
 
     protected static function newFactory(): UserFactory
     {
@@ -38,6 +40,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
         'email',
         'password',
         'app_authentication_secret',
+        'password_changed_at',
     ];
 
     /**
@@ -57,6 +60,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_changed_at' => 'datetime',
         ];
     }
 
